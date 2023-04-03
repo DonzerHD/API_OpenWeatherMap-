@@ -62,6 +62,7 @@ def obtenir_donnees_meteo(ville):
     
     if response.status_code == 200:
         data = response.json()
+        print(data)
         temperature_actuelle = obtenir_temperature_actuelle(data)
         temperature_ressentie = obtenir_temperature_ressentie(data)
         temp_min, temp_max = obtenir_temperature_min_max(data)
@@ -94,5 +95,37 @@ def obtenir_donnees_meteo(ville):
     else:
         print(f"Erreur lors de la récupération des données pour la ville {ville}. Code d'erreur : {response.status_code}")
         return None
+
+# Prévisions météo
+# URL de base pour les prévisions API
+FORECAST_BASE_URL = "https://api.openweathermap.org/data/2.5/forecast"
+
+def obtenir_previsions_meteo(ville):
+    params = {
+        "q": ville,
+        "appid": API_KEY,
+        "units": "metric",
+        "lang": "fr"
+    }
+    response = requests.get(FORECAST_BASE_URL, params=params)
     
-obtenir_donnees_meteo("Paris")
+    if response.status_code == 200:
+        data = response.json()
+        
+        previsions = []
+        for prevision in data["list"]:
+            timestamp = prevision["dt"]
+            timestamp = datetime.datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
+            temperature = prevision["main"]["temp"]
+            # mettre la température a 0 chiffre après la virgule
+            temperature = "{:.0f}".format(temperature)
+            temperature = temperature + "°C"
+            temps = prevision["weather"][0]["description"]
+            previsions.append({"timestamp": timestamp, "temperature": temperature, "temps": temps})
+        
+        return previsions
+    else:
+        print(f"Erreur lors de la récupération des prévisions pour la ville {ville}. Code d'erreur : {response.status_code}")
+        return None
+
+print(obtenir_previsions_meteo("Paris"))
