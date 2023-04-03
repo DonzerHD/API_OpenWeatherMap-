@@ -4,7 +4,7 @@ Ceci est une application web développée avec Streamlit pour afficher la mété
 
 ## Installation
 
-- Cloner le repo : `git clone https://github.com/username/meteo-des-villes.git`
+- Cloner le repo : `git clone git@github.com:DonzerHD/API_OpenWeatherMap-.git`
 - Installer les dépendances : `pip install -r requirements.txt`
 
 ## Utilisation
