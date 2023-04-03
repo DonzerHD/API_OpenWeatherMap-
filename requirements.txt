@@ -3,3 +3,7 @@ python-dotenv
 pandas
 matplotlib
 ipykernel
+streamlit
+folium
+streamlit-folium
+pydeck

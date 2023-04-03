@@ -12,8 +12,19 @@ API_KEY = os.getenv("OPENWEATHER_API_KEY")
 # URL de base pour les requêtes API
 BASE_URL = "https://api.openweathermap.org/data/2.5/weather"
 
+def obtenir_coordonnees(data):
+    if "coord" in data:
+        print("Coordonnées trouvées")
+        return data["coord"]["lat"], data["coord"]["lon"]
+    else:
+        print("Coordonnées non trouvées")
+        return None
+
 def obtenir_temperature_actuelle(data):
     return data["main"]["temp"]
+
+def obtenir_coordonnees(data):
+    return data["coord"]["lat"], data["coord"]["lon"]
 
 def obtenir_temperature_ressentie(data):
     return data["main"]["feels_like"]
@@ -40,8 +51,6 @@ def obtenir_lever_soleil(data):
 def obtenir_coucher_soleil(data):
     timestamp = data["sys"]["sunset"]
     return datetime.datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
-
-
 def obtenir_donnees_meteo(ville):
     params = {
         "q": ville,
@@ -62,6 +71,7 @@ def obtenir_donnees_meteo(ville):
         direction_vent = obtenir_direction_vent(data)
         lever_soleil = obtenir_lever_soleil(data)
         coucher_soleil = obtenir_coucher_soleil(data)
+        coordonnees = obtenir_coordonnees(data)
 
         donnees_meteo = {
             "temperature_actuelle": temperature_actuelle,
@@ -73,12 +83,16 @@ def obtenir_donnees_meteo(ville):
             "vitesse_vent": vitesse_vent,
             "direction_vent": direction_vent,
             "lever_soleil": lever_soleil,
-            "coucher_soleil": coucher_soleil
+            "coucher_soleil": coucher_soleil,
+            "latitude": coordonnees[0],
+            "longitude": coordonnees[1]
         }
+        
+        print(donnees_meteo)
             
         return donnees_meteo
     else:
         print(f"Erreur lors de la récupération des données pour la ville {ville}. Code d'erreur : {response.status_code}")
         return None
     
-print(obtenir_donnees_meteo("Paris"))
+obtenir_donnees_meteo("Paris")
